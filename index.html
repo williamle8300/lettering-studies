@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Lettering Studies</title>
+		<script type="text/javascript" charset="utf-8">
+		</script>
+		<script src="scripts/date.min.js"></script>
+		<script src="scripts/jquery-latest.min.js"></script>
+		<script src="scripts/jquery.zoom.min.js"></script>
+		<script src="scripts/bootstrap.min.js"></script>
+		<script src="scripts/jquery.tinysort.min.js"></script>
+	  <script src="scripts/nprogress.js"></script>
+		<script src="scripts/dug.js"></script>
+		<link rel="stylesheet" href="styles/bootstrap.min.css" type="text/css">
+		<link rel="stylesheet" href="styles/style.css" type="text/css">
+	  <link rel="stylesheet" href="styles/nprogress.css" type="text/css"/>
+		<script>
+			NProgress.start();
+			NProgress.set(0.4);
+			var interval = setInterval(function() { NProgress.inc(); }, 1000);
+		</script>
+	</head>
+	<!-- <canvas id="orbits"></canvas>
+	<script src="scripts/magnetic.min.js"></script>-->
+	 <body id="body">
+		<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href=""><strong>Lettering Studies</strong></a>
+        </div>
+				<div class="navbar-collapse collapse">
+			    <ul class="nav navbar-nav navbar-left">
+			      <li><a href="#" id="show-all" class="active">SHOW ALL</a></li>
+			      <li><a href="#" id="sergeyshapiro-dribbble">SergeyShapiro</a></li> <!--[#ids] must correlate to [.classes] below-->
+			      <li><a href="#" id="bijdevleet-dribbble">Bijdevleet</a></li>    
+			      <li><a href="#" id="theosone-facebook">Theosone</a></li>        
+			      <li><a href="#" id="inabrush-rss">inabrush.com</a></li>         
+			      <li><a href="#" id="calligraphica-rss">calligraphi.ca</a></li>  
+			      <li><a href="#" id="typehunting-rss">typehunting.com</a></li>   
+			      <li><a href="#" id="typenovel-rss">typenovel.tumblr.com</a></li>
+			    </ul>
+			    <ul class="nav navbar-nav navbar-right">
+            <li><a href="#" id="togglepins">Toggle pins</a></li>
+			    </ul>
+			  </div><!--/.nav-collapse -->
+      </div>
+    </div>
+		<ul id="pins" style="display:none"></ul>
+		<div id="feeds" class="container"></div>
+	  <script>
+			dug({//Pinterest
+        endpoint: 'https://api.pinterest.com/v3/pidgets/boards/williamle8300/Illustrating/pins/',
+        template: '{{#data.pins}}<li class="span2"><div class="thumbnail with-caption"><img class="pinterest" width="200" src="{{images.237x.url}}"/><p class="meta"><a href="http://pinterest.com/pin/{{id}}" title="{{description}}"><span>{{description}}</span></a><span class="author">{{attribution.author_name}}</span></p></div></li>{{/data.pins}}',
+				target: 'pins',
+				beforeRender: function(data) {//get the actual raw image. frikkin Pinterest...
+					for(var i = 0; i < data.data.pins.length; i++){
+						data.data.pins[i].images['237x'].url = data.data.pins[i].images['237x'].url.replace("\/237x\/", "\/originals\/");//alter the string to get the raw image
+					}
+				}
+      });
+    </script>
+		<script>
+		  dug({//Dribbble user: sergeyshapiro
+	      endpoint: 'http://api.dribbble.com/players/sergeyshapiro/shots',
+	      template: '{{#shots}}<div style="display:none" class="thumbnail with-caption sergeyshapiro-dribbble"><img data-publishdate="{{created_at}}" src="{{image_url}}"/><p class="meta"><a href="http://dribbble.com/shots/{{id}}" title="{{title}}"><span>{{title}}</span></a><span class="author">{{player.name}}</span><small><span>DRIBBBLE</span></small></p></div>{{/shots}}',
+				target: 'feeds',
+				beforeRender: function (data) {//conform data-publishdate
+					for (var i = 0; i < data.shots.length; i++) {
+						data.shots[i].created_at = Date.parse(data.shots[i].created_at) * 1000;
+					}
+				},
+				success: function(){
+					$('.sergeyshapiro-dribbble').show();
+				}
+		  });
+		</script>
+		<script>
+		  dug({//Dribbble user: bijdevleet
+		      endpoint: 'http://api.dribbble.com/players/bijdevleet/shots',
+		      template: '{{#shots}}<div style="display:none" class="thumbnail with-caption bijdevleet-dribbble"><img data-publishdate="{{created_at}}" src="{{image_url}}"/><p class="meta"><a href="http://dribbble.com/shots/{{id}}" title="{{title}}"><span>{{title}}</span></a><span class="author">{{player.name}}</span><small><span>DRIBBBLE</span></small></p></div>{{/shots}}',
+					target: 'feeds',
+						beforeRender: function (data) {//conform data-publishdate
+						for (var i = 0; i < data.shots.length; i++) {
+							data.shots[i].created_at = Date.parse(data.shots[i].created_at) * 1000;
+						}
+					},
+				success: function(){
+					$('.bijdevleet-dribbble').show();
+				}
+		  });
+		</script>
+		<script>
+		  dug({//Facebook album: Theosone
+		      endpoint: 'https://graph.facebook.com/157663594300662/photos',
+		      template: '{{#data}}<div style="display:none" class="thumbnail with-caption theosone-facebook"><img data-publishdate="{{created_time}}" src="{{images.source}}"/><p class="meta"><a href="{{link}}" title="{{name}}"><span>{{name}}</span></a><span class="author">Theosone</span><small><span>Facebook</span></small></p></div>{{/data}}',
+					target: 'feeds',
+						beforeRender: function (data) {//conform data-publishdate; remove extra image dimensions
+						for (var i = 0; i < data.data.length; i++) {
+							data.data[i].images = data.data[i].images[0];//replace array of img objs with just one image obj
+							data.data[i].created_time = Date.parse(data.data[i].created_time) * 1000;
+						}
+						data.data = data.data.slice(0,15);//only use 15 of them
+					},
+				success: function(){
+					$('.theosone-facebook').show();
+				}
+		  });
+		</script>
+	  <script>
+			dug({//inabrush.com
+        endpoint: 'https://ajax.googleapis.com/ajax/services/feed/load?v=2.0&q=http://inabrush.com/rss/&num=15',
+        template: '{{#responseData.feed.entries}}<div style="display:none" class="thumbnail with-caption inabrush-rss"><img data-publishdate="{{publishedDate}}" src="{{content}}"/><p class="meta"><a href="{{link}}" title="{{title}}"><span>{{title}}</span></a><span class="author">{{author}}</span><small><span>INABRUSH.COM</span></small></p></div>{{/responseData.feed.entries}}',
+				target: 'feeds',	
+				beforeRender: function(data){//parse out first element (in this case, img ele); conform data-publishdate
+					for (var i = 0; i < data.responseData.feed.entries.length; i++) {
+						data.responseData.feed.entries[i].content = $.parseHTML(data.responseData.feed.entries[i].content)[0].src;
+						data.responseData.feed.entries[i].publishedDate = Date.parse(data.responseData.feed.entries[i].publishedDate) * 1000;
+					}
+				},
+				success: function(){
+					$('.inabrush-rss').show();
+				}
+      });
+    </script>
+	  <script>
+			dug({//calligraphi.ca
+        endpoint: 'https://ajax.googleapis.com/ajax/services/feed/load?v=2.0&q=http://calligraphi.ca/rss/&num=15',
+        template: '{{#responseData.feed.entries}}<div style="display:none" class="thumbnail with-caption calligraphica-rss"><img data-publishdate="{{publishedDate}}" src="{{content}}"/><p class="meta"><a href="{{link}}" title="{{title}}"><span>{{title}}</span></a><span class="author">{{author}}</span><small><span>CALLIGRAPHI.CA</span></small></p></div>{{/responseData.feed.entries}}',
+				target: 'feeds',	
+				beforeRender: function(data){//parse out first element (in this case, img ele); conform data-publishdate
+					for (var i = 0; i < data.responseData.feed.entries.length; i++) {
+						data.responseData.feed.entries[i].content = $.parseHTML(data.responseData.feed.entries[i].content)[0].src;
+						data.responseData.feed.entries[i].publishedDate = Date.parse(data.responseData.feed.entries[i].publishedDate) * 1000;
+					}
+				},
+				success: function(){
+					$('.calligraphica-rss').show();
+				}
+      });
+    </script>
+	  <script>
+			dug({//typehunting.com
+        endpoint: 'https://ajax.googleapis.com/ajax/services/feed/load?v=2.0&q=http://typehunting.com/rss/&num=15',
+        template: '{{#responseData.feed.entries}}<div style="display:none" class="thumbnail with-caption typehunting-rss"><img data-publishdate="{{publishedDate}}" src="{{content}}"/><p class="meta"><a href="{{link}}" title="{{title}}"><span>{{title}}</span></a><span class="author">{{author}}</span><small><span>TYPEHUNTING.COM</span></small></p></div>{{/responseData.feed.entries}}',
+				target: 'feeds',	
+				beforeRender: function(data){//parse out first element (in this case, img ele); conform data-publishdate
+					for (var i = 0; i < data.responseData.feed.entries.length; i++) {
+						data.responseData.feed.entries[i].content = $.parseHTML(data.responseData.feed.entries[i].content)[0].src;
+						data.responseData.feed.entries[i].publishedDate = Date.parse(data.responseData.feed.entries[i].publishedDate) * 1000;
+					}
+				},
+				success: function(){
+					$('.typehunting-rss').show();
+				}
+      });
+    </script>
+	  <script>
+			dug({//typenovel.tumblr.com
+        endpoint: 'https://ajax.googleapis.com/ajax/services/feed/load?v=2.0&q=http://typenovel.tumblr.com/rss/&num=15',
+        template: '{{#responseData.feed.entries}}<div style="display:none" class="thumbnail with-caption typenovel-rss"><img data-publishdate="{{publishedDate}}" src="{{content}}"/><p class="meta"><a href="{{link}}" title="{{title}}"><span>{{title}}</span></a><span class="author">{{author}}</span><small><span>TYPENOVEL.TUMBLR.COM</span></small></p></div>{{/responseData.feed.entries}}',
+				target: 'feeds',	
+				beforeRender: function(data){//parse out first element (in this case, img ele); conform data-publishdate
+					for (var i = 0; i < data.responseData.feed.entries.length; i++) {
+						data.responseData.feed.entries[i].content = $.parseHTML(data.responseData.feed.entries[i].content)[0].src;
+						data.responseData.feed.entries[i].publishedDate = Date.parse(data.responseData.feed.entries[i].publishedDate) * 1000;
+					}
+				},
+				success: function(){
+					$('.typenovel-rss').show();
+				}
+      });
+    </script>
+		<script>
+			$(window).bind("load", function() {
+		    NProgress.done();
+		    clearInterval(interval);
+				$('#feeds img, #pins img').on('click', function(){//listeners for modal
+			  	$('.modal-body').empty();
+			  	var title = $(this).parent('a').attr("title");
+			  	$('.modal-title').html(title);
+			  	$($(this).parents('div').html()).appendTo('.modal-body');
+			  	$('#modal').modal({show:true});
+					$('.modal-body').zoom({ on:'mouseover', magnify: 1.7 });//init zoom for 'this' img
+				});
+				$('.navbar-left li a').click(function(event){//listeners for filtering content
+					$('#feeds .thumbnail').hide();
+					if (event.target.id == 'show-all') {$('#feeds .thumbnail').show();}
+					$('.navbar-left li a').removeClass('active').addClass('inactive')
+					$('#' +event.target.id).removeClass('inactive').toggleClass('active');
+					$('.' +event.target.id).show();
+				});
+				$('.navbar-right #togglepins').click(function(event){
+					$(this).toggleClass('active')
+					$('#pins').slideToggle('slow');
+				});//listener to toggle #pins
+				$('#feeds div.thumbnail').tsort('img',{data:'publishdate', order: 'desc'});//sort #feeds thumbnails by milliseconds
+				$('#feeds div.thumbnail').fadeTo( "slow", 1);//after sorting, show them
+			});
+		</script>
+		<div id="modal" class="modal fade" tabindex="-1" role="dialog">
+		  <div class="modal-dialog">
+			  <div class="modal-content">
+					<div class="modal-body">
+					</div>
+			  </div>
+		  </div>
+		</div>
+	</body>
+</html>
