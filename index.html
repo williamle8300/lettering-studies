@@ -39,6 +39,7 @@
 			      <li><a href="#" id="show-all" class="active">SHOW ALL</a></li>
 			      <li><a href="#" id="sergeyshapiro-dribbble">SergeyShapiro</a></li> <!--[#ids] must correlate to [.classes] below-->
 			      <li><a href="#" id="bijdevleet-dribbble">Bijdevleet</a></li>    
+			      <li><a href="#" id="kinessisk-dribbble">Kinessisk</a></li>    
 			      <li><a href="#" id="theosone-facebook">Theosone</a></li>        
 			      <li><a href="#" id="inabrush-rss">inabrush.com</a></li>         
 			      <li><a href="#" id="calligraphica-rss">calligraphi.ca</a></li>  
@@ -92,6 +93,21 @@
 					},
 				success: function(){
 					$('.bijdevleet-dribbble').show();
+				}
+		  });
+		</script>
+		<script>
+		  dug({//Dribbble user: kinessisk
+		      endpoint: 'http://api.dribbble.com/players/kinessisk/shots',
+		      template: '{{#shots}}<div style="display:none" class="thumbnail with-caption kinessisk-dribbble"><img data-publishdate="{{created_at}}" src="{{image_url}}"/><p class="meta"><a href="http://dribbble.com/shots/{{id}}" title="{{title}}"><span>{{title}}</span></a><span class="author">{{player.name}}</span><small><span>DRIBBBLE</span></small></p></div>{{/shots}}',
+					target: 'feeds',
+						beforeRender: function (data) {//conform data-publishdate
+						for (var i = 0; i < data.shots.length; i++) {
+							data.shots[i].created_at = Date.parse(data.shots[i].created_at) * 1000;
+						}
+					},
+				success: function(){
+					$('.kinessisk-dribbble').show();
 				}
 		  });
 		</script>
