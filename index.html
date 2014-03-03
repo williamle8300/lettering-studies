@@ -55,7 +55,7 @@
 		<div id="feeds" class="container"></div>
 	  <script>
 			dug({//Pinterest
-        endpoint: 'https://api.pinterest.com/v3/pidgets/boards/williamle8300/Illustrating/pins/',
+        endpoint: 'https://api.pinterest.com/v3/pidgets/boards/williamle8300/type/pins/',
         template: '{{#data.pins}}<li class="span2"><div class="thumbnail with-caption"><img class="pinterest" width="200" src="{{images.237x.url}}"/><p class="meta"><a href="http://pinterest.com/pin/{{id}}" title="{{description}}"><span>{{description}}</span></a><span class="author">{{attribution.author_name}}</span></p></div></li>{{/data.pins}}',
 				target: 'pins',
 				beforeRender: function(data) {//get the actual raw image. frikkin Pinterest...
